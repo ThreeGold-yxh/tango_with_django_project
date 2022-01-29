@@ -14,6 +14,11 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+# 代表一个静态资源的地址的变量，这个地址在我们当前项目的static文件夹下
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+# 代表动态媒体资源的地址，这个地址在我们当前项目的media文件夹下
+MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 
 
 # Quick-start development settings - unsuitable for production
@@ -37,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rango',
 ]
 
 MIDDLEWARE = [
@@ -54,14 +60,16 @@ ROOT_URLCONF = 'tango_with_django_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATE_DIR,],
         'APP_DIRS': True,
         'OPTIONS': {
+            # context_processors上下文处理器
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -118,3 +126,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+# 因为我们的静态资源可能存在多个地方，所以放一个数组，里面存各个静态资源的变量
+STATICFILES_DIRS = [STATIC_DIR, ]
+
+# The two variables tell Django where to look in your filesystem for media files
+# (MEDIA_ROOT) that have been uploaded and stored, and what URL to serve them
+# from (MEDIA_URL).
+# 这两个变量告诉Django在你的文件系统中寻找已经上传和存储的媒体文件（MEDIA_ROOT），以及从哪个URL提供这些文件（MEDIA_URL）
+MEDIA_ROOT = MEDIA_DIR
+MEDIA_URL = '/media/'
+
+
