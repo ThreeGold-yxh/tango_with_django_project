@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% load staticfiles %} <!--New Line-->
+<html>
+    <head>
+        <title>Rango</title>
+    </head> 
+    <body>
+        <h1>Rango says...</h1> 
+        <div>
+            here is the about page! <br />
+            <strong>tutorial has been put together by Xinhao</strong>
+            <!--<br/>意思是简单开启新的一行-->
+            <!--<strong>{{ boldmessage }}</strong><br />-->
+        </div> 
+        <!--<a>指的是索引，超链接-->
+        <div>
+            <a href="/">index</a><br />
+            <img src="{% static 'images/Rango.jpg' %}"
+                 alt="Picture of Rango" /> <!--New Line-->
+            <img src="{{ MEDIA_URL}}cat.jpg" />
+        </div>
+    </body>
+</html>
+
+
+

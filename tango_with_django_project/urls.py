@@ -27,6 +27,7 @@ urlpatterns = [
     path('rango/', include('rango.urls')),
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# 上面加号后面的内容是让你配置media文件用的，用来动态拿资源
 
 
 
