@@ -8,7 +8,7 @@ def index(request):
     # Note the key boldmessage matches to {{ boldmessage }} in the template!
     # 构建一个字典，传递给模板引擎作为其上下文。
     # 注意键boldmessage与模板中的{{ boldmessage }}相匹配!
-    context_dict = {'boldmessage': 'Crunchy, creamy, cookie, candy, cupcake'}
+    context_dict = {'boldmessage': 'Crunchy, creamy, cookie, candy, cupcake!'}
 
     # Return a rendered response to send to the client.
     # We make use of the shortcut function to make our lives easier.

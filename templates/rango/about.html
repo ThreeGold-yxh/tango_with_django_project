@@ -1,29 +1,30 @@
 <!DOCTYPE html>
-{% load staticfiles %} <!--New Line-->
+{% load staticfiles %}
+<!--New Line-->
 <html>
-    <head>
-        <title>Rango</title>
-    </head> 
-    <body>
-        <h1>Rango says...</h1> 
-        <div>
-            Rango says here is the about page. <br />
-            <strong>tutorial has been put together by Xinhao</strong>
-            <!--<br/>意思是简单开启新的一行-->
-            <!--<strong>{{ boldmessage }}</strong><br />-->
-        </div> 
-        <!--<a>指的是索引，超链接-->
-        <div>
-            <a href="/rango/">Index</a><br />
-        </div> 
-            <img src="{% static 'images/rango.jpg' %}"
-                 alt="Picture of Rango" /> <!--New Line-->
-        </div>
-        <div>
-            <img src="{{ MEDIA_URL}}cat.jpg" alt = "pictire of a cat" />
-        </div>
-    </body>
+
+<head>
+    <title>Rango</title>
+</head>
+
+<body>
+    <h1>Rango says...</h1>
+    <div>
+        Rango says here is the about page. <br />
+        <strong>This tutorial has been put together by Xinhao</strong>
+        <!--<br/>意思是简单开启新的一行-->
+        <!--<strong>{{ boldmessage }}</strong><br />-->
+    </div>
+    <!--<a>指的是索引，超链接-->
+    <div>
+        <a href="/rango/">Index</a>
+    </div>
+    <div>
+        <img src="{% static 'images/rango.jpg' %}" alt="Picture of Rango" />
+    </div>
+    <div>
+        <img src="{{ MEDIA_URL }}cat.jpg" alt="Picture of a Cat" />
+    </div>
+</body>
+
 </html>
-
-
-
