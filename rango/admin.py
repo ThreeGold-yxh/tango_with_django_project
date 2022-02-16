@@ -13,7 +13,6 @@ class PageAdmin(admin.ModelAdmin):
     # 在更改列表页中以列的形式展示这个对象：
     list_display = ('title', 'category', 'url')
 
-
 admin.site.register(Category)
 admin.site.register(Page, PageAdmin)
 

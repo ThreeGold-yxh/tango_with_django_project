@@ -1,3 +1,11 @@
 db.sqlite3
 __pycache__/
 .pyc
+tests_chapter3.py
+tests_chapter4.py
+tests_chapter5.py
+tests_chapter6.py
+tests_chapter7.py
+tests_chapter8.py
+tests_chapter9.py
+tests_chapter10.py
