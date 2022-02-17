@@ -1,8 +1,14 @@
+from django.urls import reverse
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from rango.models import Category
 # 首先导入 Page 模型，即把下述导入语句添加到文件顶部：
 from rango.models import Page
+
+# 在文件顶部添加这个导入语句
+from rango.forms import CategoryForm
+
+from rango.forms import PageForm
 
 # Create your views here.
 def index(request):
@@ -75,3 +81,78 @@ category_name_slug 参数确认要查看的是哪个分类。如果通过别名�
 网页,并将其添加到上下文字典 context_dict 中。
 '''
 
+def add_category(request):
+    form = CategoryForm()
+    
+    # 是 HTTP POST 请求吗？
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        
+        # 表单数据有效吗？
+        if form.is_valid():
+            
+            # 把新分类存入数据库
+            '''
+            确认分类成功添加的另一种方法是修改 rango/views.py 文件中的 add_category() 函数,把
+            form.save(commit=True) 改成 cat = form.save(commit=True),为通过表单创建的分类对象
+            提供一个引用,这样便可以在控制台中打印分类,例如 print(cat, cat.slug)。
+            '''
+            cat = form.save(commit=True)
+            
+            # 保存新分类后可以显示一个确认消息
+            # 不过既然最受欢迎的分类在首页
+            # 那就把用户带到首页吧
+            # return index(request)
+        
+            # 用重定向
+            return redirect('/rango/')
+        else:
+            
+            # 表单数据有错误
+            # 直接在终端里打印出来
+            print(form.errors)
+            
+    # 处理有效数据和无效数据之后
+    # 渲染表单，并显示可能出现的错误消息
+    return render(request,'rango/add_category.html',{'form': form})
+
+
+def add_page(request, category_name_slug):
+    try:
+        category = Category.objects.get(slug=category_name_slug)
+    except Category.DoesNotExist:
+        category = None
+        
+    # You cannot add a page to a Category that does not exist...
+    if category is None:
+        return redirect('/rango/')    
+    
+    form = PageForm()
+    # 是HTTP POST 请求吗？
+    if request.method == 'POST':
+        form = PageForm(request.POST)
+        
+        # 表单数据有效吗？
+        if form.is_valid():
+            if category:
+                # 先拿到form对象
+                page = form.save(commit=False)
+                page.category = category
+                page.views = 0
+                # form.save(commit=True)
+                page.save()
+                # probably better to use a redirect here.
+            # 虽然这种写法比较好, 但无法通过测试
+            # return show_category(request, category_name_slug)
+            
+            # 用重定向
+            return redirect(reverse('rango:show_category',kwargs={'category_name_slug':category_name_slug}))
+        else:
+            print(form.errors)
+
+    context_dict = {'form':form, 'category': category}
+    
+    
+    # 处理有效数据和无效数据之后
+    # 渲染表单，并显示可能出现的错误消息
+    return render(request, 'rango/add_page.html', context_dict)

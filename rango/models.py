@@ -12,8 +12,9 @@ from django.template.defaultfilters import slugify
 # Create your models here.
 # 这个model类表示 分类，它要继承django.db.models.Model，也就是括号中的内容
 class Category(models.Model):
+    NAME_MAX_LENGTH = 128
     # name字段是独一无二的，而且长度为128
-    name = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=NAME_MAX_LENGTH, unique=True)
     # 更新 Category 模型，加上 views 和 likes 字段，二者的默认值均是零。
     # views 是查看次数，likes是点赞次数
     views = models.IntegerField(default=0)
@@ -44,8 +45,10 @@ class Category(models.Model):
 
 # 这个分类表示 网页
 class Page(models.Model):
+    TITLE_MAX_LENGTH = 128
+    URL_MAX_LENGTH = 200
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    title = models.CharField(max_length=128)
+    title = models.CharField(max_length=TITLE_MAX_LENGTH)
     url = models.URLField()
     views = models.IntegerField(default=0)
     pub_date = models.DateTimeField('date published', default = timezone.now)
