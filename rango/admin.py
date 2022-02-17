@@ -12,7 +12,13 @@ class PageAdmin(admin.ModelAdmin):
     # 它会更有帮助。为此，使用 list_display 后台选项，它是一个包含要显示的字段名的元组，
     # 在更改列表页中以列的形式展示这个对象：
     list_display = ('title', 'category', 'url')
+    
+    
+# 添加这个类，定制管理界面
+class CategoryAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('name',)}
 
-admin.site.register(Category)
+# admin.site.register(Category)
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(Page, PageAdmin)
 
