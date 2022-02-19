@@ -19,9 +19,12 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 
+from datetime import datetime
+
 
 # Create your views here.
 def index(request):
+    request.session.set_test_cookie()
     # return HttpResponse("Rango says hey there partner!")
     # Construct a dictionary to pass to the template engine as its context.
     # Note the key boldmessage matches to {{ boldmessage }} in the template!
@@ -40,6 +43,17 @@ def index(request):
     # 拿到浏览量前五的网站，倒序（由大到小）
     page_list = Page.objects.order_by('-views')[:5]    
     context_dict = {'categories': category_list, 'boldmessage': bold_message, 'pages': page_list}
+        
+    # 调用处理 cookie 的辅助函数
+    visitor_cookie_handler(request)
+    
+    
+    # 提前获取 response 对象，以便添加 cookie
+    response = render(request, 'rango/index.html', context=context_dict)
+    
+    # 返回 response 对象，更新目标 cookie
+    return response
+    
     
     # Return a rendered response to send to the client.
     # We make use of the shortcut function to make our lives easier.
@@ -47,17 +61,32 @@ def index(request):
     # 返回一个渲染好的响应，发送给客户端。
     # 我们利用快捷键函数来使我们的生活更轻松。
     # 注意，第一个参数是我们希望使用的模板。
-    return render(request, 'rango/index.html', context=context_dict)
+    # return render(request, 'rango/index.html', context=context_dict)
 
 def about(request):
+    if request.session.test_cookie_worked():
+        context_dict = {}
+        context_dict['boldmessage'] = 'This tutorial has been put together by Xinhao'
+        print("TEST COOKIE WORKED!")
+        request.session.delete_test_cookie()
     # return HttpResponse("Rango says here is the about page!")
     # return render(request, 'rango/about.html')
     # 打印请求方法，是 GET 还是 POST
     print(request.method)
     # 打印用户名，如未登录，打印“AnonymousUser”
     print(request.user)
-    return render(request, 'rango/about.html', {})
+
+    visitor_cookie_handler(request)
+    context_dict['visits'] = request.session['visits']
+    response = render(request,'rango/about.html',context=context_dict)
+    return response
 # 注意，render() 函数的最后一个参数是上下文字典，用于把额外的数据传给 Django 模板引擎。因为这里没什么额外数据要传给模板，所以使用一个空字典。
+
+
+
+
+
+
 
 # 然后定义视图 show_category()
 def show_category(request, category_name_slug):
@@ -158,11 +187,11 @@ def add_page(request, category_name_slug):
                 # form.save(commit=True)
                 page.save()
                 # probably better to use a redirect here.
-            # 虽然这种写法比较好, 但无法通过测试
-            # return show_category(request, category_name_slug)
+                # 虽然这种写法比较好, 但无法通过测试
+                # return show_category(request, category_name_slug)
             
-            # 用重定向
-            return redirect(reverse('rango:show_category',kwargs={'category_name_slug':category_name_slug}))
+                # 用重定向
+                return redirect(reverse('rango:show_category',kwargs={'category_name_slug':category_name_slug}))
         else:
             print(form.errors)
 
@@ -270,3 +299,32 @@ def user_logout(request):
     logout(request)
     # 重定向到首页
     return redirect(reverse('rango:index'))
+
+def visitor_cookie_handler(request):
+    # 获取网站的访问次数
+    # 使用 COOKIES.get() 函数读取“visits”cookie
+    # 如果目标 cookie 存在，把值转换为整数
+    # 如果目标 cookie 不存在，返回默认值 1
+    visits = int(get_server_side_cookie(request, 'visits', '1'))
+    last_visit_cookie = get_server_side_cookie(request,'last_visit',str(datetime.now()))
+    last_visit_time = datetime.strptime(last_visit_cookie[:-7],'%Y-%m-%d %H:%M:%S')
+    
+    # 如果距上次访问已超过一天……
+    if (datetime.now() - last_visit_time).days > 0:
+        visits = visits + 1
+        
+        # 增加访问次数后更新“last_visit”cookie
+        request.session['last_visit'] = str(datetime.now())
+    else:
+        # 设定“last_visit”cookie
+        request.session['last_visit'] = last_visit_cookie
+    # 更新或设定“visits”cookie
+    request.session['visits'] = visits
+    
+# 辅助函数
+def get_server_side_cookie(request, cookie, default_val=None):
+    val = request.session.get(cookie)
+    if not val:
+        val = default_val
+    return val
+
