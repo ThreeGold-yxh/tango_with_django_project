@@ -41,7 +41,13 @@ def index(request):
 
 def about(request):
     # return HttpResponse("Rango says here is the about page!")
-    return render(request, 'rango/about.html')
+    # return render(request, 'rango/about.html')
+    # 打印请求方法，是 GET 还是 POST
+    print(request.method)
+    # 打印用户名，如未登录，打印“AnonymousUser”
+    print(request.user)
+    return render(request, 'rango/about.html', {})
+# 注意，render() 函数的最后一个参数是上下文字典，用于把额外的数据传给 Django 模板引擎。因为这里没什么额外数据要传给模板，所以使用一个空字典。
 
 # 然后定义视图 show_category()
 def show_category(request, category_name_slug):

@@ -24,10 +24,10 @@ class Category(models.Model):
     # slug = models.SlugField()
     
     # 解决方法一，更新模型，把 slug 字段设为允许空值
-    slug = models.SlugField(blank=True)
+    # slug = models.SlugField(blank=True)
     
     # 第二个问题也不难解决，只需把 slug 字段设为唯一的。为 slug 字段添加约束
-    # slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True)
     
     # save方法
     # 通过迁移工具能把 slug 字段添加到数据库中，而且可以为该字段指定默认值。
