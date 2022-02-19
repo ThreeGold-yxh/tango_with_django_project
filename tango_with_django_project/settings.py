@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rango',
 ]
+# django.contrib.auth 用于访问 Django 提供的身份验证系统，而 django.contrib.contenttypes 供auth 应用跟踪数据库中的模型。
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -88,6 +89,17 @@ DATABASES = {
     }
 }
 
+# PASSWORD_HASHERS = ( 
+#                     'django.contrib.auth.hashers.PBKDF2PasswordHasher', 
+#                     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher', 
+# )
+
+PASSWORD_HASHERS = [ 'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+                    'django.contrib.auth.hashers.BCryptPasswordHasher',
+                    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+                    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+]
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -98,6 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS':{ 'min_length' : 6, }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -136,4 +149,5 @@ STATICFILES_DIRS = [STATIC_DIR, ]
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
 
+LOGIN_URL = 'rango:login'
 

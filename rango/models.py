@@ -1,12 +1,15 @@
 # models.py 模块的顶部应该有 from django.db import models。如果没有，自己动手加上。
 import datetime
 import imp
+from statistics import mode
 from unicodedata import category
 import django
 from django.db import models
 from django.utils import timezone
 # 导入 slugify() 函数
 from django.template.defaultfilters import slugify
+#导入User
+from django.contrib.auth.models import User
 
 # 注意 model类 都是数据库相关
 # Create your models here.
@@ -60,3 +63,22 @@ class Page(models.Model):
     def __str__(self):  
         return self.title
 
+class UserProfile(models.Model):
+    # 这一行是必须的
+    # 建立与User模型之间的关系
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    
+    # 想增加的属性
+    website = models.URLField(blank=True)
+    picture = models.ImageField(upload_to = 'profile_images', blank = True)
+    
+    # 此外，注意 ImageField 字段的 upload_to 参数。这个参数的值与项目的 MEDIA_ROOT 设置（第 4
+    # 章）结合在一起，确定上传的头像存储在哪里。假如 MEDIA_ROOT 的值为
+    # <workspace>/tango_with_django_project/media/，upload_to 参数的值为 profile_images，那么头
+    # 像将存储在 <workspace>/tango_with_django_project/media/profile_images/ 目录中。
+    
+    # 覆盖 __str__() 方法，返回有意义的字符串
+    # 如果使用 Python 2.7.x，还要定义 __unicode__ 方法
+    def __str__(self):
+        return self.user.username
+    
